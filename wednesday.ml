@@ -1,5 +1,4 @@
-
-(* file: basics.ml
+(* file: wednesday.ml
    author: Bob Muller
 
    CSCI 3366 Programming Languages
