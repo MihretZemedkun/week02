@@ -291,7 +291,7 @@ Some library resources are used so, well, pervasively, in OCaml code, their defi
 
 **The Code Module**
 
-For this course, we've created a number of useful definitions in a module called `Code`. You can find documentation [here](https://github.com/BC-CSCI3366/s19/pub/resources/code.md).
+For this course, we've created a number of useful definitions in a module called `Code`. You can find documentation [here](https://github.com/BC-CSCI3366/s19/blob/master/resources/code.md).
 
 #### Summary
 
