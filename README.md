@@ -829,7 +829,7 @@ let rec preorder tree =
 
 (* breadthFirst : 'a tree -> 'a list
 *)
-let breadFirst tree =
+let breadthFirst tree =
   let rec loop forest =
     match forest with
     | [] -> []
