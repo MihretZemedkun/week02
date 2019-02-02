@@ -16,8 +16,7 @@
 2. Structured Types & Recursive Functions
 3. Functions are Values
 4. Imperative Features
-5. Modules
-6. Solutions to Exercises
+5. Solutions to Exercises
 
 ---
 
@@ -103,7 +102,7 @@ one might write:
 a*x + b*x + c
 ```
 
-but the former is preferred in CS3366.
+but the former is preferred in CSCI 3366.
 
 **Integer Division**
 
@@ -133,7 +132,7 @@ Exception: Division_by_zero.
 # 314e-2;;
 - : float = 3.14
 
-# 2.0 *. 3.14;;               (* NB: The floating point operators: +., -, ... end with a . *)
+# 2.0 *. 3.14;;         (* NB: The floating point operators: +., -, ... end with a . *)
 - : float = 6.28
 
 # 7.0 /. 2.0;;
@@ -308,20 +307,32 @@ For this course, we've created a number of useful definitions in a module called
 
 - A *value* is an expression that cannot be further simplified.
 
+### Prefix Notation for Infix Operators
 
-
-**Comments**:
-
-1. In the last two examples: the infix operators `+, *, /, -, …` can be used in *prefix* *position* by enclosing them in parentheses as shown.
-2. The type of the `+` operator is `int -> int -> int` — this may look a little strange; we'll explain it later.
-3. NB: the multiply operator must be surrounded by spaces `( * )` so it isn't confused with a comment.
+the infix operators `+, *, /, -, …` can be used in *prefix* *position* by enclosing them in parentheses. For example, one can write
 
 ```ocaml
- ( * ) 2 3;;
+# (+) 2 3;;
+- : int = 5
+```
+
+One catch is that the multiply operator `*` must be surrounded by spaces `( * )` so it isn't confused with a comment.
+
+```ocaml
+ # ( * ) 2 3;;
 - : int = 6
 ```
 
 This is also true for the exponentiation operator `**`.
+
+Finally, notice this:
+
+```ocaml
+# (+);;
+- : int -> int -> int = <fun>
+```
+
+The type of the `+` operator is `int -> int -> int` — this may look a little strange; we'll explain it later.
 
 -------------------
 
@@ -471,18 +482,6 @@ min3 1 2 3 ->
   1
 ```
 
-**Prefix Notation for Operators**
-
-Operators such as `+`, `*`, etc which ordinarily appear in infix notation, i.e., between the operands, are functions that can be applied with function application notation. In order to do this, they have to be enclosed in parentheses.
-
-```ocaml
-# (+);;
-- : int -> int -> int = <fun>
-
-# (+) 2 3;;
-- : int = 5
-```
-
 ## 2. Structured Types & Recursive Functions
 
 In the previous section, we learned the basics of OCaml, the basic data types, operators etc. In this section we're going to explore OCaml's built-in structured types, ways to make new types and how to process data of unbounded size using recursive functions.
@@ -613,32 +612,6 @@ let tomLikes food =
 
 Write  function `coinFlip : unit -> string` that has a 50/50 chance of returning `"heads"` or `"tails"`.
 
-#### Option Types
-
-The sum type is convenient for specifying different options. The built-in sum type `'a option` is provided to deal with cases where one of the options is that something doesn't exist. For example, the expression `1 / 0` has no value. If we evaluate this, OCaml raises a run-time exception:
-
-```ocaml
-# 1 / 0;;
-Exception: Division_by_zero.
-```
-
-Using an option type, we could write an alternative version of integer division as:
-
-```ocaml
-(* carefulDivide : int -> int -> int option
-*)
-let carefulDivide m n =
-  match n = 0 with
-  | true  -> None
-  | false -> Some (m / n)
-
-# carefulDivide 6 2;;
-- : int option = Some 3
-
-# carefulDivide 6 0;;
-- : int option = None
-```
-
 #### Lists
 
 The most common data structure in OCaml is the list.
@@ -680,6 +653,32 @@ type number = Float of float | Int of int
 
 # let numbers = [Float 3.14; Int 343; Float 0.5];;
 val numbers : number list = [Float 3.14; Int 343; Float 0.5]
+```
+
+#### Option Types
+
+The sum type is convenient for specifying different options. The built-in sum type `'a option` is provided to deal with cases where one of the options is that something doesn't exist. For example, the expression `1 / 0` has no value. If we evaluate this, OCaml raises a run-time exception:
+
+```ocaml
+# 1 / 0;;
+Exception: Division_by_zero.
+```
+
+Using an option type, we could write an alternative version of integer division as:
+
+```ocaml
+(* carefulDivide : int -> int -> int option
+*)
+let carefulDivide m n =
+  match n = 0 with
+  | true  -> None
+  | false -> Some (m / n)
+
+# carefulDivide 6 2;;
+- : int option = Some 3
+
+# carefulDivide 6 0;;
+- : int option = None
 ```
 
 ### Recursive Functions
@@ -730,7 +729,7 @@ let rec downFrom n =
 
 **Exercise**
 
-Write a function `range : int -> int list` such that a call `(range n)` returns an ascending list `[0; …; n - 1]`.
+Write a function `range : int -> int list` such that a call `(range n)` returns a list of integers ascending from 0 to `n -1`  `[0; …; n - 1]`.
 
 ```ocaml
 # let foods = [Fruit Lemon; Herb Banana; Fruit Lime; Fruit Apple];;
@@ -759,8 +758,7 @@ let rec append xs ys =
   | [] -> ys
   | x :: xs -> x :: append xs ys
 
-(* copy : 'a -> int -> 'a list
-*)
+(* copy : 'a -> int -> 'a list *)
 let rec copy item n =
   match n = 0 with
   | true  -> []
@@ -830,12 +828,12 @@ let rec preorder tree =
 (* breadthFirst : 'a tree -> 'a list
 *)
 let breadthFirst tree =
-  let rec loop forest =
-    match forest with
+  let rec loop trees =
+    match trees with
     | [] -> []
-    | Empty :: forest -> loop forest
-    | (Node{info; left; right}) :: forest ->
-      info :: loop (left :: right :: forest)
+    | Empty :: trees -> loop trees
+    | Node{info; left; right} :: trees -> 
+      info :: loop (trees @ [left; right])
   in
   loop [tree]                 
 ```
@@ -849,15 +847,12 @@ type ast = Literal of int
          | Plus of  {left : ast; right : ast}
          | Times of {left : ast; right : ast}
 
-let fmt = Printf.sprintf
-
-(* format : ast -> string
-*)
+(* format : ast -> string *)
 let rec format ast =
   match ast with
   | Literal i -> string_of_int i
-  | Plus{left; right}  -> fmt "(%s + %s)" (format left) (format right)
-  | Times{left; right} -> fmt "(%s * %s)" (format left) (format right)
+  | Plus{left; right}  -> Code.fmt "(%s + %s)" (format left) (format right)
+  | Times{left; right} -> Code.fmt "(%s * %s)" (format left) (format right)
 
 (* eval : ast -> value
 *)
@@ -1085,103 +1080,108 @@ let rec permutations symbols n =
     List.fold_left (@) [] oneMore
 ```
 
+#### Currying
 
-## 4. Modules
+Earlier we touched on the mysterious fact that `(+) : int -> int -> int`. This apparent oddity is related to another apparent oddity: that function calls look like `(append xs ys)` or even `append xs ys` rather than the more familiar `append(xs, ys)`. 
 
-In many programming languages, definitions that are inherently related to one another can be packaged up in *modules*. Consider an implementation of rational numbers — numbers such as $1/3$ that can be expressed as the ratio of two integers. An implementation of rational numbers would require some representation type, in OCaml, by convention this is often called simply `t`,  together with whatever operations one might want for working with rational numbers.
-
-For the purposes of illustration, let's specify an implementation of rationals with type signatures for the following 4 operations. In OCaml, we would house this specification, a *module signature*, in an *interface* file with the `.mli` extension, say in the file `rational.mli`:
-
-```ocaml
-type t
-
-val make : int -> int -> t
-val add : t -> t -> t
-val compareTo : t -> t -> int
-val toString : t-> string
-```
-A module `Rational` implementing this specification would then be stored in a companion file `rational.ml` (NB: the specification is in a `.mli` file and the implementation is in a `.ml` file.)
+The type of `int -> int -> int` is parenthesize associating to the right `int -> (int -> int)`. Roughly speaking, this type means "if you give me an `int` I'll give you back a function from `int` to `int`. Now consider the following definition
 
 ```ocaml
-type t = { numerator : int     (* Choosing to represent a rational number as a record. *)
-         ; denominator : int
-         }
-
-let rec gcd m n =
-  match n = 0 with
-  | true  -> m
-  | false -> gcd n (m mod n)
-
-let make numerator denominator =
-  let gcd = gcd numerator denominator
-  in
-  match denominator < 0 with
-  | true  ->
-    { numerator = - (numerator / gcd)
-    ; denominator = - (denominator / gcd)
-    }
-  | false ->
-    { numerator = numerator / gcd
-    ; denominator = denominator / gcd
-    }
-
-let add {numerator=n1; denominator=d1} {numerator=n2; denominator=d2} =
-  { numerator   = n1 * d2 + n2 * d1
-  ; denominator = d1 * d2
-  }
-
-let compareTo rat1 rat2 =
-  let a = rat1.numerator * rat2.denominator in
-  let b = rat1.denominator * rat2.numerator
-  in
-  a - b
-
-let toString {numerator; denominator} =
-  (string_of_int numerator) ^ "/" ^ (string_of_int denominator)
+# let plus(x, y) = x + y;;
+val plus : int * int -> int = <fun>
 ```
 
-When compiled as in
+This looks more familiar, the `plus` function appears to take *two* arguments, `x` and `y` and return an integer result. In fact, `plus` , like every other function in OCaml, is a function of exactly one argument — in this case a 2-tuple or pair. 
+
+Thinking about all this from the vantage of set theory, our friend `plus` looks like
 
 ```
-> ocamlc rational.mli rational.ml -o rational
-> ls
-rational*          rational.cmi    rational.cmo    rational.ml     rational.mli
+{ ..., ((2, 3), 5), ((2, 4), 6), ..., ((105, 9), 114), ((105, 10), 115), ... }
 ```
 
-The compiler will check to ensure that the implementation satisfies the specification. The file `rational*` is the linked and executable byte-code object file, the file `rational.cmi` is the compiled interface file, the file `rational.cmo` is the (unlinked) byte-code object file resulting from the compilation of the source file `rational.ml`.
+The "input" is a pair of integer addends, e.g., `(2, 3)` and the "output" is the sum, e.g., `5`.  The same vantage point shows that `(+)` which again is of type `int -> (int -> int)` looks like
 
-Then one could use the module as in
+```
+{..., (2, {..., (3, 5), (4, 6),...}), ..., (105, {..., (9, 114), (10, 115), ...}), ...}
+```
+
+So when we write `(+) 2 3`, OCaml parenthesizes it as `((+) 2) 3`. I.e., apply the one-argument function `(+)` to `2`. This gives a one-argument function expecting an `int`. Fire up a REPL and try it out!
 
 ```ocaml
-open Rational
+# let add5 = (+) 5;;
+val add5 : int -> int
 
-let r1 = Rational.make 1 3
-let r2 = Rational.make 3 5
-let r3 = Rational.add r1 r2
+# add5 10;;
+- : int = 15
 
-print_string (Rational.toString r3)
+# add5 1019;;
+- : int = 1024
 ```
 
-#### Modules in One File
+Currying seems quite mysterious for most beginners. Don't worry about it too much. It's very handy sometimes, but it doesn't come up all the time.
 
-In OCaml the module specification and module implementation can also be defined in one file as follows.
+## 4. Imperative Features
+
+OCaml encourages a natural, mathematical style of programming. But, as we discuss up ahead, it also has a full set of imperative features: mutable references, arrays, while and for-loops, exceptions and I/O. These features are used sparingly but the are sometimes exactly what is required.
+
+#### Mutable References
+
+We'll talk more about mutation and aliasing in the next section. For now we introduce `ref` by example.
 
 ```ocaml
-module type RATIONAL =
-  sig
-    type t
-    val make : int -> int -> t
-    val add : t -> t -> t
-    val compareTo : t -> t -> int
-    val toString : t-> string
-  end
+# let count = ref 5;;
+val count : int ref = {contents = 5}
 
-module Rational : RATIONAL =
-  struct
-    type t = {numerator : int; denominator : int}
-    ...
-  end
+# count;;
+- : int ref = {contents = 5}
+
+# !count;;                           (* The ! "bang" is the dereference operator *)
+- : int = 5
+
+# count := !count + 1;;              (* The := is the "gets" or "assign-to" operator*)
+- : unit = ()
+
+# !count;;
+- : int = 6
 ```
+
+#### Mutable Fields of Records
+
+```ocaml
+# type student = { name : string; mutable enrolled : bool }
+
+# let bob = { name = "Bob"; enrolled = true };;
+val bob : student = {name = "Bob"; enrolled = true}
+
+# bob.enrolled <- false;;        (* The <- is record field mutation operator *)
+- : unit = ()
+
+# bob;;
+- : student = {name = "Bob"; enrolled = false}
+```
+
+#### Arrays
+
+There is an `Array` module in StdLib.
+
+```ocaml
+# let a = [| 2; 3 |];;
+val a : int array = [|2; 3|]
+
+# a.(0);;
+- : int = 2
+
+# a.(1) <- 343;
+- : unit = ()
+
+# a;;
+val a : int array = [|2; 343|]
+
+# let bc = Array.make 10 "BC";;
+val bc = [| "BC"; "BC"; "BC"; "BC"; "BC"; "BC"; "BC"; "BC"; "BC"; "BC"; ]
+```
+
+---
 
 ## 5. Solutions to Exercises
 
